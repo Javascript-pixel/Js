@@ -1,0 +1,102 @@
+var buttonanchor = top_left
+var buttondock = top_left
+var buttonx = 1
+var buttony = 6
+var level   = true
+var scene   = false
+var quest   = false
+var unknown = false
+var mindart = ascii
+,TT,
+│░░│
+`──´
+asciiend
+var ascenery = [
+"waterfall",
+"undead_crypt_intro"]
+var alevels =  [
+"rocky_plateau",
+"deadwood_valley",
+"caustic_caves", 
+"fungus_forest",
+"undead_crypt",
+"bronze_mine", 
+"icy_ridge", 
+"temple"]
+var adisabled = [
+"mushroom_shop",
+"uulaa_shop",
+"cross_deadwood_river",
+"bronze_gate",
+"cross_bridge"]
+var button 
+?totaltime=1
+  button = DrawMindstoneButton()
+  Display(level,scene,quest,unknown)
+func DrawMindstoneButton()
+    var p = ui.AddPanel()
+    p.anchor = buttonanchor
+    p.dock = buttondock
+    p.visible = false
+    p.color = #888888
+    p.style = 1
+    p.w = 8
+    p.h = 5
+    p.x = buttonx
+    p.y = buttony
+    var b = ui.AddButton()
+    b.anchor = center_center
+    b.dock = center_center
+    b.visible = inherit
+    b.style = 1
+    b.text = “”
+    b.w = 8
+    b.h = 5
+    b.SetPressed(BtnPressed)
+    p.Add(b)
+    var a = ui.AddAnim(mindart)
+    a.anchor = center_center
+    a.dock = center_center
+    a.visible = inherit
+    a.color = #white
+    p.Add(a)
+    ?sys.isPC
+      var t = ui.AddText()
+      t.anchor = bottom_right
+      t.dock = bottom_right
+      t.visible = inherit
+      t.color = #888888
+      t.text = "[M]"
+      t.w = 3
+      t.h = 1
+      t.x = -1
+      p.Add(t)
+  return p
+func BtnPressed()
+  ui.OpenMind()
+func SetXY(x,y)
+  button.x = x
+  button.y = y
+func Display(levels,scenery,
+            ^quests,unknown)
+
+  ?!quests & loc.isquest
+    button.visible = false
+    return
+  var lvl = loc.id
+  ?ascenery.Contains(lvl)
+    lvl = 1
+  :?alevels.Contains(lvl)
+    lvl = 2
+  :?adisabled.Contains(lvl)
+    lvl = 3
+  :
+    lvl = 4 
+  ?scenery & lvl = 1
+    button.visible = true
+  :?levels & lvl = 2
+    button.visible = true
+  :?unknown & lvl = 4
+    button.visible = true
+  :
+    button.visible = false
