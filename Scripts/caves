@@ -1,0 +1,61 @@
+
+func Caves()
+ ?fd>17
+  master()
+ :?loop=0 
+  ?f= phase 
+   ?fd<10
+    ?hp ! maxhp
+     equipL dL
+     equip mask
+    :
+     equip mask
+     equipL Ice D
+   :?fd<17
+    ?dash()
+     return
+  :?f=boss
+   ?fd<10
+    equip mask
+    equipL Ice
+   :?fd<17
+    ?dash()
+     return 
+  :?fd<10
+   equip mask
+   equipL uncanny
+   activate P
+  :?dash()
+   return
+ :
+  ?fd>5 & f ! boss & fd<15
+   step(＂+21 stone cross＂)
+  ?f=phase
+   ?fd<10
+    ?hp ! maxhp
+     equipR dL
+     equipL moon
+    :
+     moonj(＂Ice Sword D -shiny＂,
+     ^＂Ice Sword D shiny＂)
+   :?fd<17
+    ?dash()
+     return 
+  :?f=boss
+   ?pos.x>500
+    moonj(＂Ice Sword D -shiny＂,
+    ^＂Ice Sword D shiny＂)
+   :?shield
+    ?dash()
+     return
+   :
+    step(＂Stone Cross +21＂)
+  :?fd<10
+   equipL unmake
+   equipR uncanny
+   ?foe.Getcount(20)>8 & loop%2=1
+    ?Blade()
+     return
+  :?fd<17
+   ?dash()
+    return
