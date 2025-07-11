@@ -1,0 +1,469 @@
+func master()
+ ?pickup.distance<8
+  equipR star
+ :?igc(＂quarterstaff＂)<=0&ica()
+  equip quarterstaff+21
+  activate R
+  return
+ :
+  equipL trisk
+  ?summon.count=0&ica()
+   equipR fire talisman 
+   activate R
+  :?loop<1
+   equipR mask
+   ?enduse=29
+    activate P
+  :
+   equip compound 
+   ?bosscount=1 & screen.i!4
+    ?igc(＂staff_fire＂)<=0 & ica()
+    ^& armor > 6
+     equip Heretic
+     activate R
+    :
+     equip compound
+   ?enduse=25
+    ?heretic()
+     return
+   :?enduse=29
+    activate P
+   :
+    equip comp
+    equipL trisk 
+   
+func Rocky()
+ ?fd>18
+  master()
+ :?loop=0
+  ?f = phase3
+   ?fd < 11
+    equipR mask
+    ?foe.state = 32 & mask()
+     return
+    ?fds ! ＂chill:6＂
+     equipL Ice dI
+    :?fds ! ＂debuff_damage:1＂
+     equipL dP
+    :?hp < maxhp
+     equipL dL
+    :
+     equipL Ice D
+    ?fs = 32 & foe.damage = 1 & foe.time = 68
+     equipL mind
+   :?fd<17
+    ?dash()
+     return
+  :?f = phase2
+   ?fd < 11
+    equipR mask
+    ?f = ice
+     equipL fire D
+    :?f = fire
+     equipL Aether D
+    :?f = aether
+     ?hp=maxhp
+      equipL vigor D
+     :
+      equipL dL
+    :?f = vigor
+     equipL Poison D
+    :?f = poison
+     equipL Ice D
+    :?fbs ! ＂buff_protection＂
+     ?fds ! ＂chill:6＂
+      equipL dI
+     :?fds ! ＂debuff_damage:1＂
+      equipL dP
+   :?fd<17
+    ?dash()
+     return 
+  :?f = phase1
+   ?fd < 11
+    equipR mask
+    ?fds ! ＂chill:6＂
+     equipL Ice dI
+    :?fds ! ＂debuff_damage:1＂
+     equipL dP
+    :?hp < maxhp
+     equipL dL
+    :
+     equipL Aether D
+   :?fd<18
+    ?dash()
+     return
+  :?f = boss
+   ?fd < 11
+    equipR mask
+    activate P
+    ?fds ! ＂stun＂
+     equipL grapp
+    :?fds ! ＂chill:6＂
+     equipL dI
+    :?fds ! ＂debuff_damage:1＂
+     equipL dP
+    :?hp<maxhp
+     equipL dL
+    :
+     equipL Aether D
+   :?fd<17
+    ?dash()
+     return
+ :
+  ?((p1kt >= 170 & p1kt < 200)
+  ^|( p2kt < 300 & p2kt >= 252))
+   ?quart(＂quarterstaff +21＂)
+    return
+  ?f = phase3
+   ?fd < 10
+    ?mask()
+     return
+    :?pagan()
+     return
+    :
+     moon(＂Ice Sword -shiny＂,
+     ^＂Ice Sword shiny＂)
+     activate P
+   :?fd<18
+    ?dash()
+     return
+  :?f = phase2
+   ?!ai.enabled
+    equip comp
+    equipL quest
+   :?fd < 8
+    ?f = ice
+     moon(＂Fire Sword -shiny＂,
+     ^＂Fire Sword shiny＂)
+    :?f = fire
+     moon(＂Aether D -shiny＂,＂Aether D shiny＂)
+    :?f = aether
+     equipL moon
+     ?hp=maxhp
+      equipR vigor D
+     :
+      equipR dL
+    :?f = vigor
+     moon(＂Poison Sword -shiny＂,
+     ^＂Poison Sword shiny＂)
+    :?f = poison
+     moon(＂Ice Sword -shiny＂,＂Ice Sword shiny＂)
+   :?fd<17 
+    ?dash()
+     return
+  :?f = phase1
+   ?!ai.enabled & !ai.paused
+    ?hammer()
+     return
+    :?armor<37
+     equip comp
+     equipL quest
+    ?fs=118
+     barush()
+   :?fd<6
+    ?hp<maxhp
+     equipL moon
+     equipR dL
+    :
+     moon(＂Aether Sword -shiny＂,
+     ^＂Aether Sword shiny＂)
+  :?f=boss
+   ?foe.hp<1
+    bosscount=1
+   ?fd<10
+    ?hp<maxhp
+     equipL moon
+     equipR dL
+    :
+     moon(＂Aether Sword -shiny＂,
+     ^＂Aether Sword shiny＂)
+   :?fd<17 
+    ?dash()
+     return
+
+//§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
+var aacItems=［＂trisk＂,＂ouro＂］
+?item.right.state=3
+ ?item.left.state=-1
+  equipR @aacItems［time%2］@
+  equip @item.right@
+ :
+  equipR @aacItems［0］@
+  equipR @item.right@
+?item.left.state=3
+ equipL @aacItems［1］@
+ equipL @item.left@
+var igc 
+igc=item.GetCooldown
+var ica
+ica=item.CanActivate
+var fd 
+fd=foe.distance
+var f
+f=foe
+var fs
+fs=foe.state
+var fds
+fds=foe.debuffs.string
+var fbs
+fbs=foe.buffs.string
+var timeoff=0
+var bosscount=0
+var loop=0
+var p1kf = false
+var p2kf = false
+var p3kf = false
+var posf = false
+var p1kt = 0
+var p2kt = 0
+var p3kt = 0
+var post = 0
+var count1 = 0
+var count2 = 0
+var pmdelay = 15
+?fd>7
+  count1 = 0
+  count2 = 0
+?foe = phase1 & foe.hp < 1
+  p1kf = true
+?foe = phase2 & foe.hp < 1
+  p2kf = true
+?foe = phase3 & foe.hp < 1
+  p3kf = true
+?pos.x >= 259 & !posf
+  posf = true
+?p1kf & !p2kf
+  p1kt++
+?p2kf & !p3kf
+  p2kt++
+?p3kf & enduse < 1
+  p3kt++
+?posf & !p1kf
+  post++
+?loc.loop
+  p1kf = false
+  p2kf = false
+  p3kf = false
+  posf = false
+  p1kt = 0
+  p2kt = 0
+  p3kt = 0
+  post = 0
+  count1 = 0
+  count2 = 0
+  pmdelay = 15
+  bosscount=0
+  loop++
+
+?!loc.isQuest & loc.stars>0
+ disable npcDialog
+ ?loc = ＂Rocky Plateau＂
+  timeoff=294
+  brew stone + bronze
+  Rocky()
+:
+ equipL trisk
+//§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
+func dash()
+ ?ai.enabled
+  equipL trisk
+  ?igc(＂bash＂) <= 0
+   equip bash
+  :?igc(＂dash＂) <= 0
+   equip dash shiny
+   return true
+  return false
+func moon(s1,s2)
+ ?totaltime%3 = 0
+  equipR @s1@
+  equipL moon
+ :?totaltime%3 = 1
+  equipR @s2@
+  equipL moon
+ :
+  equipR @s1@
+  equipL @s2@
+func moonj(w1,w2)
+ ?totaltime%4 = 0
+  equipR moon
+  equipL @w1@
+ :?totaltime%4 = 1
+  equipR @w1@
+  equipL @w2@
+ :?totaltime%4 = 2
+  equipR moon
+  equipL @w2@
+ :
+  equipR @w2@
+  equipL @w1@
+func step(smt)
+ ?totaltime%2=0
+  equipL trisk
+  equipR hatchet 
+ :
+  equip @smt@
+func BladeAt(i)
+ return screen.i=i & fd<29 & Blade()
+var wait=0
+func Blade()
+ ?igc(＂blade＂)<=0
+  wait++
+  screen.Next()
+  ?wait>18
+   equip blade
+   activate R
+   screen.ResetOffset()
+   wait=0
+  return true
+ return false
+func hammer()
+ return excec(＂heavy_hammer＂,＂False Prophet＂)
+func bardiche()
+ return excec(＂bardiche＂,＂Satanic＂)
+func mask()
+ return excec(＂mask＂,＂mask＂)
+func pagan()
+ return excec(＂staff_poison＂,＂pagan＂)
+func heretic()
+ return excec(＂staff_fire＂,＂heretic＂)
+func ocultism()
+ return excec(＂staff_aether＂,＂Ocultism＂)
+func quart(v)
+ return excec(＂quarterstaff＂,v)
+func excec(x,v)
+ ?ica() & (igc(x)<=0 | item.right=v
+ ^& item.right.state=2)
+  equip @v@
+  activate R
+  return true
+ return false
+func barush()
+ ?igc(＂quarterstaff＂) <= 0 & ica()
+  equip quart
+  activate R
+ :?igc(＂dash＂)<=0
+  equip dash shiny
+  equipL trisk
+ :?bardiche()  
+  return
+ :
+  equip bash
+  return true
+ return false
+
+var cfc=＂#A9A9A9＂
+>h-3,4,@cfc@,∆ J.S ∆
+?time/4%4=0
+  >h-5,1,@cfc@,._.-
+:?time/4%4=1
+  >h-6,1,@cfc@,-._.-
+:?time/4%4=2
+  >h-6,1,@cfc@,.-._-
+:?time/4%4=3
+  >h-5,1,@cfc@,_.-.
+>h-2,-2,@cfc@,ascii
+ /`
+('.
+_)_\_
+asciiend 
+draw.Player()
+//§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
+var c=＂#A9A9A9＂
+var APC=＂#A9A9A9＂
+var oldhp=foe.hp+foe.armor
+var dps=［］
+?foe.hp+foe.armor<oldhp
+  dps.Add((foe.hp + foe.armor)-oldhp)
+:
+  dps.Add(0)
+oldhp=foe.hp+foe.armor
+?dps.Count()>30
+  dps.RemoveAt(0)
+var n=0
+?!loc.begin
+  for value : dps
+    n=n-value
+  >`0,6,dps: @n@
+n=0
+var t=0
+var y=0
+var fps=0
+>`11,6,fps:@fps@
+?time.second>t
+  fps=y
+  y=1
+:
+  y++
+t=time.second
+var old_t= item.GetTreasureCount()
+var enduse = 0
+?old_t ! item.GetTreasureCount()
+  enduse++
+?loc.loop
+  old_t = item.GetTreasureCount()
+  enduse = 0
+var cds=［］
+func Cooldowns(x,y,w,h)
+ ?cds.Count()=0
+  for i:［＂mind＂,＂dash＂,＂bash＂,＂quarterstaff＂,
+  ^＂heavy_hammer＂,＂bardiche＂,＂blade＂,＂mask＂,
+  ^＂skeleton_arm＂］
+   ?item.GetCount(i) 
+    cds.Add(i)
+ var cd
+ var cdc
+ var t
+ for i:cds
+  t=igc(i)
+  ?t>0
+   cdc=#565656
+   cd=time.FormatDigital(t)
+  :
+   cdc=#A9A9A9
+   cd=string.ToUpper(string.Sub(i,0,4))
+  >`@x@,@y@,@cdc@,@cd@
+  x=x+w
+  y=y+h
+?foe.level<=5&foe.level>0
+ APC=＂#02BDDE＂
+?foe.level<=10&foe.level>5
+ APC=＂#B5B500＂
+?foe.level<=15&foe.level>10
+ APC=＂#326331＂
+?loc.stars<=10&loc.stars>5
+ c=＂#02BDDE＂
+?loc.stars<=15&loc.stars>10
+ c=＂#B5B500＂
+?loc.stars<=20&loc.stars>15
+ c=＂#326331＂
+
+//§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\\
+func PrintMyAscii()
+ var mc=＂#A9A9A9＂
+ >`0,0,@APC@,lastBoss: @lastBoss@
+ >`0,1,@mc@,buffs: @fbs@
+ >`0,2,@mc@,debuffs: @fds@
+ >`0,3,@mc@,hp @hp@ armor @armor@ 
+ ^@buffs.GetCount(＂smite＂)@♦
+ >`0,4,@mc@,buffs: @buffs.string@
+ >`0,5,@mc@,debuffs: @debuffs.string@
+ >`0,8,@mc@,ai.enabled: @ai.enabled@
+ >`0,9,@mc@,ai.idle: @ai.idle@
+ >`0,10,@mc@,ai.walking: @ai.walking@
+ >`0,11,@mc@,ai.paused: @ai.paused@
+ >`0,12,@mc@,Elite: @encounter.isElite@ 
+ ^@encounter.eliteMod@
+ >`0,13,@mc@,potion: @item.potion!empty@
+ >`0,16,LB time: @totaltime-timeoff@ @enduse@ 
+ >`0,22,@c@,loc: @loc.id@ *@loc.stars@* 
+ ^GP @loc.gp@
+ >`0,23,@mc@,pos: x @pos.x@ y @pos.y@ z @pos.z@
+ ^ scrn: @screen.i@
+ >`0,24,@APC@,☆@foe.level@☆ @foe.id@ 
+ ^d: @fd@ c: @foe.count@ dmg: 
+ ^@foe.damage@ hp: @foe.hp@ z: @foe.z@
+ >`50,25,@mc@,@igc(＂staff_fire＂)@
+?!loc.isQuest & loc.stars > 0
+^& loc ! ＂shop＂
+ PrintMyAscii()
+ Cooldowns(0,screen.h-2,5,0)
