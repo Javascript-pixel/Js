@@ -1,0 +1,152 @@
+func Rocky()
+ ?fd>18
+  master()
+ :?loop=0
+  ?f = phase3
+   ?fd < 11
+    equipR mask
+    ?foe.state = 32 & mask()
+     return
+    ?fds ! ＂chill:6＂
+     equipL Ice dI
+    :?fds ! ＂debuff_damage:1＂
+     equipL dP
+    :?hp < maxhp
+     equipL dL
+    :
+     equipL Ice D
+    ?fs = 32 & foe.damage = 1 & foe.time = 68
+     equipL mind
+   :?fd<17
+    ?dash()
+     return
+  :?f = phase2
+   ?fd < 11
+    equipR mask
+    ?f = ice
+     equipL fire D
+    :?f = fire
+     equipL Aether D
+    :?f = aether
+     ?hp=maxhp
+      equipL vigor D
+     :
+      equipL dL
+    :?f = vigor
+     equipL Poison D
+    :?f = poison
+     equipL Ice D
+    :?fbs ! ＂buff_protection＂
+     ?fds ! ＂chill:6＂
+      equipL dI
+     :?fds ! ＂debuff_damage:1＂
+      equipL dP
+   :?fd<17
+    ?dash()
+     return 
+  :?f = phase1
+   ?fd < 11
+    equipR mask
+    ?fds ! ＂chill:6＂
+     equipL Ice dI
+    :?fds ! ＂debuff_damage:1＂
+     equipL dP
+    :?hp < maxhp
+     equipL dL
+    :
+     equipL Aether D
+   :?fd<18
+    ?dash()
+     return
+  :?f = boss
+   ?fd < 11
+    equipR mask
+    activate P
+    ?fds ! ＂stun＂
+     equipL grapp
+    :?fds ! ＂chill:6＂
+     equipL dI
+    :?fds ! ＂debuff_damage:1＂
+     equipL dP
+    :?hp<maxhp
+     equipL dL
+    :
+     equipL Aether D
+   :?fd<17
+    ?dash()
+     return
+ :
+  ?((p1kt >= 170 & p1kt < 200)
+  ^|( p2kt < 300 & p2kt >= 252))
+   ?quart(＂quarterstaff +21＂)
+    return
+  ?f = phase3
+   ?fd < 10
+    ?mask()
+     return
+    :?pagan()
+     return
+    :
+     moon(＂Ice Sword -shiny＂,
+     ^＂Ice Sword shiny＂)
+     activate P
+   :?fd<18
+    ?dash()
+     return
+  :?f = phase2
+   ?!ai.enabled
+    equip comp
+    equipL quest
+   :?fd < 8
+    ?f = ice
+     moon(＂Fire Sword -shiny＂,
+     ^＂Fire Sword shiny＂)
+    :?f = fire
+     moon(＂Aether D -shiny＂,＂Aether D shiny＂)
+    :?f = aether
+     equipL moon
+     ?hp=maxhp
+      equipR vigor D
+     :
+      equipR dL
+    :?f = vigor
+     moon(＂Poison Sword -shiny＂,
+     ^＂Poison Sword shiny＂)
+    :?f = poison
+     moon(＂Ice Sword -shiny＂,＂Ice Sword shiny＂)
+   :?fd<17 
+    ?dash()
+     return
+  :?f = phase1
+   ?!ai.enabled & !ai.paused
+    ?hammer()
+     return
+    :?armor<37
+     equip comp
+     equipL quest
+    ?fs=118
+     barush()
+   :?fd<6
+    ?hp<maxhp
+     equipL moon
+     equipR dL
+    :
+     moon(＂Aether Sword -shiny＂,
+     ^＂Aether Sword shiny＂)
+  :?f=boss
+   ?foe.hp<1
+    bosscount=1
+   ?fd<10
+    ?hp<maxhp
+     equipL moon
+     equipR dL
+    :
+     moon(＂Aether Sword -shiny＂,
+     ^＂Aether Sword shiny＂)
+   :?fd<17 
+    ?dash()
+     return
+?loc = "Rocky Plateau"
+ brew stone + bronze 
+ timeoff = 294
+ Rocky()
